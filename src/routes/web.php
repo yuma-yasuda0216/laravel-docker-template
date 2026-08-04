@@ -12,7 +12,4 @@
 */
 
 // Route::get()はHTTPメソッドのGETを示している
-Route::get('/todo', function () {
-    echo 'Hello World! 佑真';
-    // return view('welcome');
-});
+Route::get('/todo', 'TodoController@index');
