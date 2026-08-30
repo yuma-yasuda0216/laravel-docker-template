@@ -12,12 +12,13 @@
               <div class="list-group list-group-flush">
                 @foreach ($todos as $todo)
                  <div class="d-flex align-items-center p-2">
-                   <span class="col-9">{{ $todo->content }}</span>
+                   <pans class="col-9">{{ $todo->content }}</pans>
+                   <a href="{{ route('todo.show', $todo->id) }}" class="btn btn-info ml-3">詳細</a>
                  </div>
                 @endforeach
               </div>
             </div>
           </div>
         </div>
-@endsection <!-- 追記 -->
+@endsection
 <!-- extends=エクステンズ -->

@@ -11,7 +11,7 @@ class TodoSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('todos')->truncate(); // 追記
+        
 
         $testData = [
             [

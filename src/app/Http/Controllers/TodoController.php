@@ -19,7 +19,7 @@ class TodoController extends Controller
     public function create()
     {
         // TODO: 第1引数を指定
-        return view('todo.create'); // 追記
+        return view('todo.create');
     }
 
     public function store(Request $request)
@@ -33,6 +33,10 @@ class TodoController extends Controller
         // 3. Todoインスタンスの`->save()`を実行してオブジェクトの状態をDBに保存するINSERT文を実行
         $todo->save();
 
-        return redirect()->route('todo.index'); // 追記
+        return redirect()->route('todo.index');
+    }
+
+    public function show($id)
+    {
     }
 }
