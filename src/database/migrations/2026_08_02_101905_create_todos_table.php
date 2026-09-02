@@ -15,10 +15,13 @@ class CreateTodosTable extends Migration
     {
         Schema::create('todos', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('content');// 追加
+            $table->string('content');
             $table->timestamps();
         });
     }
+    // bigIncrements=ビックインクリメント
+    // timestamps=タイムスタンプス
+
 
     /**
      * Reverse the migrations.
@@ -29,4 +32,5 @@ class CreateTodosTable extends Migration
     {
         Schema::dropIfExists('todos');
     }
+    // dropIfExists=ドロップイフエグジスト
 }
