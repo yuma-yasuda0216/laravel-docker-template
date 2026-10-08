@@ -22,7 +22,7 @@ class TodoController extends Controller
 
     public function create()
     {
-        return view('todo.index');
+        return view('todo.create');
     }
 
     public function store(Request $request)
