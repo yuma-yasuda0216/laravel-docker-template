@@ -10,3 +10,112 @@ Laravel①(一覧表示・新規作成)
 
 ▪️新規作成
 
+
+### 言語化苦手なところ
+・public function up()
+    {
+        Schema::create('todos', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('content');
+            $table->timestamps();
+        });
+    }
+//upメソッドの処理内容はテーブル名(`todos`)とカラム名(`id`、`content`)の設定をしています。
+
+・namespace App;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Todo extends Model
+{
+    protected $table = 'todos';
+
+    protected $fillable = [
+        'content',
+    ];
+}
+//Todoモデルの処理内容はテーブル名とカラム名をTodoモデルへ紐づくためのクラスです。
+
+・class TodoController extends Controller
+{
+    public function index()
+    {
+        $todo = new Todo();
+        $todos = $todo->all();
+        return view('todo.index', ['todos' => $todos]);
+    }
+}
+//indexメソッドの処理内容はデータベースからtodosテーブル内の値を取得してindexブレードファイルへ表示するためのメソッドです。
+
+・public function store(Request $request)
+    {
+        $inputs = $request->all();
+        
+        $todo = new Todo();
+        $todo->fill($inputs);
+        $todo->save();
+
+        return redirect()->route('todo.index');
+    }
+//storeメソッドの処理内容は画面のフォームから送信した値を連想配列として取得しています。
+またsaveメソッドは登録、更新を実行してデータベースへ値を送ります。処理後、一覧表示へ自動転送されます。
+
+・bladeファイルにあるディレクティブ(子ファイル・親ファイル)の継承のところ
+
+
+▪️はじめに
+・一覧表示・新規作成はLaravelのwebアプリケーションのフレームワークを使い、作成しました。
+
+▪️一覧表示
+・一覧表示の画面表示のコードの流れを説明します。
+・「web.php」はURLとControllerを結びつくためののファイルです。
+15行目が一覧表示に表示したい処理が書かれています。getメソッドの第一引数は一覧表示画面のURIです。
+第二引数はControllerファイルのTodoControllerクラスのindexメソッドのことです。
+・indexメソッドの処理内容はtodosテーブルの全件のレコードを取得して、画面へ表示しています。
+todoモデルにnewの演算子がついているので、インスタンス化し$todo変数へ格納します。
+格納した変数からallメソッドを呼び出し、$todos変数へ格納します。
+呼び出したのはtodosテーブル内の全件のレコードです。
+view関数の第一引数は「index.blade.php」を指定しています。第二引数のバリューは先ほどの格納した値が入っています。
+またキーは第一引数で指定した「index.blade.php」上で利用する変数名です。
+「index.blade.php」内の説明をしていきます。先ほどのviewメソッドの第二引数のキー名の変数名はforeachディレクティブの引数にあります。
+$todosは全件のレコードが入っています。$todoは格レコードが入っています。
+波かっこ2個に囲っている$todoからcontentを呼び出しているので、画面上は内容だけ表示しています。
+ちなみに波かっこ2個と記している理由は出力結果・エスケープ処理・phpタグの省略形です。
+「ToDoを追加」ボタンの説明です。aタグのhref属性は波かっこ2個に囲っているroute関数は「web.php」の一覧表示画面のルーティングのgetメソッドから引数にある名前付きルートを呼び出して
+index.blade.phpファイルのroute関数の引数へ渡しています。返り値は一覧表示画面のURLです。
+@extends・@sectionの説明をします。extendsディレクティブの引数はbaseブレードファイルです。
+「base.blade.php」ファイルはHTMLの土台が書かれています。extendsディレクティブの記載なので、baseブレードファイルは親ファイル、indexブレードファイルは子ファイルと呼びます。
+sectionディレクティブとyieldディレクティブの引数に書かれている文字は同じにするとsection~endsectionの内容をyieldへ表示します。
+
+▪️新規作成
+新規作成に入ります。
+新規作成の表示は「web.php」ファイルの16行目です。
+createメソッドの処理内容は画面の表示です。
+createブレードファイルformタグの説明です。フォーム内で入力した値はstoreへpost送信されます。
+method属性はpost送信、actionタグは「TodoController.php」ファイルのstoreメソッドです。
+inputタグのtype属性はフォームのテキストでname属性はcontentです。
+「TodoController.php」ファイルのstoreメソッドの処理内容はフォームから入力した値を連想配列で取得し、
+データベースへ送っています。また処理後はindexブレードファイルへ自動転送します。
+
+
+
+
+
+
+
+
+    public function store(Request $request)
+    {
+        $inputs = $request->all();
+        
+        $todo = new Todo();
+        $todo->fill($inputs);
+        $todo->save();
+
+        return redirect()->route('todo.index');
+    }
+    //storeメソッドの処理内容は画面からリクエストを受け取り、送信した値を連想配列で受け取り、データベースへ渡します。
+    //また、処理後、index.blade.phpへ自動でリダイレクトされます。
+
+    @csrf
+    //です。formタグ内に記すことで、送信元にトークンがあり、送信した時はトークンと確認して、一致したら遷移先へ通ることができます。
