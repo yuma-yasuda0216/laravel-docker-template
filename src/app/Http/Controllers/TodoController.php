@@ -29,7 +29,6 @@ class TodoController extends Controller
     public function store(Request $request)
     {
         $inputs = $request->all();
-        
         $this->todo->fill($inputs);
         $this->todo->save();
 
@@ -48,5 +47,16 @@ class TodoController extends Controller
         $todo = $this->todo->find($id);
         
         return view('todo.edit', ['todo' => $todo]);
+    }
+
+    public function update(Request $request, $id) // 第1引数: リクエスト情報の取得　第2引数: ルートパラメータの取得
+    {
+    // TODO: リクエストされた値を取得
+        $inputs = $request->all();
+        $todo = $this->todo->find($id);
+        $todo->fill($inputs);
+        $todo->save();
+
+        return redirect()->route('todo.show', $todo->id);
     }
 }
