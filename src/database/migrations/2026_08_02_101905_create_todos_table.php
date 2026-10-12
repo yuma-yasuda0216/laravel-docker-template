@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 class CreateTodosTable extends Migration
 {
     /**
-     * Run the migrations.
+     * Run the migrations
      *
      * @return void
      */
