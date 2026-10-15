@@ -2,37 +2,69 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-// 追加
+use App\Http\Requests\TodoRequest;
 use App\Todo;
 
 class TodoController extends Controller
 {
+    private $todo;//$todoはプロパティ
+
+    public function __construct(Todo $todo)
+    {
+        $this->todo = $todo;
+    }
+
     public function index()
     {
-        // 追加
-        $todo = new Todo();
-        $todos = $todo->all();
+        $todos = $this->todo->all();
+
         return view('todo.index', ['todos' => $todos]);
     }
 
     public function create()
     {
-        // TODO: 第1引数を指定
-        return view('todo.create'); // 追記
+        return view('todo.create');
     }
 
-    public function store(Request $request)
+    public function store(TodoRequest $request)
     {
         $inputs = $request->all();
+        $this->todo->fill($inputs);
+        $this->todo->save();
+
+        return redirect()->route('todo.index');
+    }
+
+    public function show($id)
+    {
+        $todo = $this->todo->find($id);
+
+        return view('todo.show', ['todo' => $todo]);
+    }
+
+    public function edit($id)
+    {
+        $todo = $this->todo->find($id);
         
-        // 1. todosテーブルの1レコードを表すTodoクラスをインスタンス化
-        $todo = new Todo();
-        // 2. Todoインスタンスのカラム名のプロパティに保存したい値を代入
+        return view('todo.edit', ['todo' => $todo]);
+    }
+
+    public function update(TodoRequest $request, $id) // 第1引数: リクエスト情報の取得　第2引数: ルートパラメータの取得
+    {
+    // TODO: リクエストされた値を取得
+        $inputs = $request->all();
+        $todo = $this->todo->find($id);
         $todo->fill($inputs);
-        // 3. Todoインスタンスの`->save()`を実行してオブジェクトの状態をDBに保存するINSERT文を実行
         $todo->save();
 
-        return redirect()->route('todo.index'); // 追記
+        return redirect()->route('todo.show', $todo->id);
+    }
+
+    public function delete($id)
+    {
+        $todo = $this->todo->find($id);
+        $todo->delete();
+
+        return redirect()->route('todo.index');
     }
 }
